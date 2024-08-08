@@ -6,6 +6,8 @@ import folium
 df = pd.read_csv("../lsbigdata-project1/data/houseprice-with-lonlat.csv")
 df
 
+df.columns
+
 ames_df = df[["Longitude", "Latitude"]]
 
 # ames 중심 위도, 경도 구하기
@@ -72,6 +74,11 @@ for i in range(len(df)):
 map_sig.save('maps/ames_Marker(for-in).html')
 -------------------------------
 # 방법 4
+CircleMarker 방법
+
+import pandas as pd
+import folium
+
 # 데이터 로드
 df = pd.read_csv("../lsbigdata-project1/data/houseprice-with-lonlat.csv")
 Longitude = df['Longitude']
@@ -94,4 +101,60 @@ for i in range(len(df)):
 
 # 지도 저장
 map_sig.save('maps/ames_CircleMarker.html')
+----------------------------
+import pandas as pd
+import folium
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
+# 데이터 로드
+df = pd.read_csv("../lsbigdata-project1/data/houseprice-with-lonlat.csv")
+Longitude = df['Longitude']
+Latitude = df['Latitude']
+Price = df['Sale_Price']
+Neighborhood = df['Neighborhood']
+
+# 지도 객체 생성
+map_sig = folium.Map(location=[42.034722, -93.62],
+                     zoom_start=12,
+                     tiles='cartodbpositron')
+
+# 고유한 Neighborhood 값을 추출하고, 이를 색상으로 매핑
+neighborhoods = df['Neighborhood'].unique()
+num_neighborhoods = len(neighborhoods)
+colormap = plt.cm.get_cmap('tab10', num_neighborhoods)  # 동네 수에 맞춰 색상 설정
+colors = {neighborhood: mcolors.rgb2hex(colormap(i)[:3]) for i, neighborhood in enumerate(neighborhoods)}
+
+# 각 마커 추가
+for i in range(len(df)):
+    neighborhood_color = colors[Neighborhood[i]]
+    popup_text = f"Neighborhood: {Neighborhood[i]}<br>Price: ${Price[i]:,.0f}"
+    folium.CircleMarker(
+        [Latitude[i], Longitude[i]],
+        popup=popup_text,
+        radius=3,
+        color=neighborhood_color,
+        fill_color=neighborhood_color,
+        fill=True,
+        fill_opacity=0.6
+    ).add_to(map_sig)
+
+# 주요 시설들의 위도, 경도, 이름 및 마커 정보
+facilities = [
+    {"name": "Mary Greeley Medical Center (병원)", "lat": 42.025, "lon": -93.615, "color": "red", "icon": "plus-sign"},
+    {"name": "Ames High School (학교)", "lat": 42.029, "lon": -93.637, "color": "green", "icon": "education"},
+    {"name": "Walmart Supercenter (마트)", "lat": 42.020, "lon": -93.609, "color": "blue", "icon": "shopping-cart"},
+    {"name": "Ames Police Department (경찰서)", "lat": 42.026, "lon": -93.617, "color": "black", "icon": "info-sign"},
+    {"name": "Ames Fire Department (소방서)", "lat": 42.022, "lon": -93.611, "color": "orange", "icon": "fire"},
+]
+
+# 마커 추가
+for facility in facilities:
+    folium.Marker(
+        location=[facility["lat"], facility["lon"]],
+        popup=facility["name"],
+        icon=folium.Icon(color=facility["color"], icon=facility["icon"])
+    ).add_to(map_sig)
+
+# 지도 출력
+map_sig.save('house_price_map.html')
