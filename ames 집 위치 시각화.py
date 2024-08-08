@@ -122,7 +122,7 @@ map_sig = folium.Map(location=[42.034722, -93.62],
 # 고유한 Neighborhood 값을 추출하고, 이를 색상으로 매핑
 neighborhoods = df['Neighborhood'].unique()
 num_neighborhoods = len(neighborhoods)
-colormap = plt.cm.get_cmap('tab10', num_neighborhoods)  # 동네 수에 맞춰 색상 설정
+colormap = plt.cm.get_cmap('tab30', num_neighborhoods)  # 동네 수에 맞춰 색상 설정
 colors = {neighborhood: mcolors.rgb2hex(colormap(i)[:3]) for i, neighborhood in enumerate(neighborhoods)}
 
 # 각 마커 추가
@@ -141,11 +141,16 @@ for i in range(len(df)):
 
 # 주요 시설들의 위도, 경도, 이름 및 마커 정보
 facilities = [
-    {"name": "Mary Greeley Medical Center (병원)", "lat": 42.025, "lon": -93.615, "color": "red", "icon": "plus-sign"},
-    {"name": "Ames High School (학교)", "lat": 42.029, "lon": -93.637, "color": "green", "icon": "education"},
+    {"name": "Mary Greeley Medical Center (병원)", "lat": 42.025, "lon": -93.615, "color": "red", "icon": "hospital"},
+    {"name": "Ames High School (학교)", "lat": 42.029, "lon": -93.637, "color": "green", "icon": "school"},
     {"name": "Walmart Supercenter (마트)", "lat": 42.020, "lon": -93.609, "color": "blue", "icon": "shopping-cart"},
-    {"name": "Ames Police Department (경찰서)", "lat": 42.026, "lon": -93.617, "color": "black", "icon": "info-sign"},
+    {"name": "Ames Police Department (경찰서)", "lat": 42.026, "lon": -93.617, "color": "black", "icon": "shield"},
     {"name": "Ames Fire Department (소방서)", "lat": 42.022, "lon": -93.611, "color": "orange", "icon": "fire"},
+    {"name": "North Grand Mall (쇼핑몰)", "lat": 42.044, "lon": -93.628, "color": "purple", "icon": "shopping-bag"},
+    {"name": "McFarland Park (공원)", "lat": 42.073, "lon": -93.608, "color": "darkgreen", "icon": "tree"},
+    {"name": "Lincoln Center Hy-Vee (마트)", "lat": 42.012, "lon": -93.631, "color": "pink", "icon": "shopping-cart"},
+    {"name": "Iowa State University Police Department (경찰서)", "lat": 42.026, "lon": -93.646, "color": "gray", "icon": "shield"},
+    {"name": "Ames Public Library (도서관)", "lat": 42.026, "lon": -93.624, "color": "cadetblue", "icon": "book"},
 ]
 
 # 마커 추가
@@ -157,4 +162,4 @@ for facility in facilities:
     ).add_to(map_sig)
 
 # 지도 출력
-map_sig.save('house_price_map.html')
+map_sig.save('maps/house_price_map.html')
